@@ -1,5 +1,10 @@
 let counter = 1;
-let numbers = {};
+let numbers = {
+    number1: '',
+    number2: '',
+    operator: '',
+    result: '',
+};
 
 function add(num1,num2) {
     num1 = Number(num1);
@@ -63,13 +68,20 @@ function display(event) {
         }
     } else if(event.target.className === 'operator') {
         const topScreen = document.querySelector('.topDisplay');
-        topScreen.textContent = '';
         topScreen.textContent +=bottomScreen.textContent + ' ' + event.target.textContent;
         bottomScreen.textContent ='';
+        counter = 2;
+        if(numbers['number1'] && numbers['number2'] && numbers['operator']) {
+            numbers['result'] = operate(numbers.operator,numbers.number1,numbers.number2);
+            topScreen.textContent = numbers['result'] + ' ' + event.target.textContent;
+            numbers['number1'] = numbers['result'];
+            numbers['number2'] = '';
+            numbers['result'] = '';
+        }
         numbers['operator'] = event.target.value;
-        counter += 1;
         
     }
+    console.log(numbers);
 
 }
 
@@ -80,6 +92,12 @@ function erase (event) {
         topScreen.textContent = '';
         bottomScreen.textContent = '';
         counter = 1;
+        numbers = {
+            number1: '',
+            number2: '',
+            operator: '',
+            result: '',
+        }
     } else {
         bottomScreen.textContent = bottomScreen.textContent.slice(0,bottomScreen.textContent.length -1);
     }
