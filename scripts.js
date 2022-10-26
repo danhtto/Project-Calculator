@@ -28,7 +28,6 @@ function divide(num1,num2) {
     num1 = Number(num1);
     num2 = Number(num2);
     let number = num1/num2;
-
     return number;
 }
 
@@ -44,10 +43,23 @@ function operate(operator, num1, num2) {
     } 
 }
 
+function reset() {
+    numbers = {
+        number1: '',
+        number2: '',
+        operator: '',
+        result: '',
+    }
+    counter = 1;
+}
 
 
 function display(event) {
     const bottomScreen = document.querySelector('.bottomDisplay');
+    const topScreen = document.querySelector('.topDisplay');
+    if (topScreen.textContent) {
+        topScreen.textContent = '';
+    }
     if(event.target.className !== 'operator') {
         if(event.target.className === 'decimal') {
             if(bottomScreen.textContent.includes('.')) {
@@ -59,8 +71,16 @@ function display(event) {
             const topScreen = document.querySelector('.topDisplay');
             bottomScreen.textContent = '';
             numbers['result'] = operate(numbers.operator,numbers.number1,numbers.number2);
-            topScreen.textContent = numbers.result;
-            counter = 1;
+            if(numbers['result'] === Number('Infinity')) {
+                topScreen.textContent = 'ERROR: Cannot divide by 0';
+                topScreen.style.fontSize = '20px';
+                reset();
+
+            } else {
+                topScreen.textContent = numbers.result;
+                reset();
+            }
+            
         }
         else{
             bottomScreen.textContent += event.target.value;
@@ -73,10 +93,17 @@ function display(event) {
         counter = 2;
         if(numbers['number1'] && numbers['number2'] && numbers['operator']) {
             numbers['result'] = operate(numbers.operator,numbers.number1,numbers.number2);
-            topScreen.textContent = numbers['result'] + ' ' + event.target.textContent;
-            numbers['number1'] = numbers['result'];
-            numbers['number2'] = '';
-            numbers['result'] = '';
+            if (toString(numbers['result'] === 'Infinity') && numbers['number2']==='0') {
+                topScreen.textContent = 'ERROR: Cannot divide by 0';
+                topScreen.style.fontSize = '20px';
+                reset();
+                
+            } else {
+                topScreen.textContent = numbers['result'] + ' ' + event.target.textContent;
+                numbers['number1'] = numbers['result'];
+                numbers['number2'] = '';
+                numbers['result'] = '';
+            }
         }
         numbers['operator'] = event.target.value;
         
@@ -91,13 +118,7 @@ function erase (event) {
     if(event.target.textContent === 'CLEAR') {
         topScreen.textContent = '';
         bottomScreen.textContent = '';
-        counter = 1;
-        numbers = {
-            number1: '',
-            number2: '',
-            operator: '',
-            result: '',
-        }
+        reset();
     } else {
         bottomScreen.textContent = bottomScreen.textContent.slice(0,bottomScreen.textContent.length -1);
     }
